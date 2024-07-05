@@ -9,14 +9,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { CircleUser, Menu, Package2 } from "lucide-react";
+import { CircleUser, Menu, Package2, Plus } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { navItems } from "../App";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const Layout = () => {
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar />
+      <Sidebar onAddProject={() => setIsProjectModalOpen(true)} />
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <MobileSidebar />
@@ -27,11 +33,31 @@ const Layout = () => {
           <Outlet />
         </main>
       </div>
+
+      <Dialog open={isProjectModalOpen} onOpenChange={setIsProjectModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Project</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Project Name</Label>
+              <Input placeholder="Enter project name" />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setIsProjectModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button>Add</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-const Sidebar = () => (
+const Sidebar = ({ onAddProject }) => (
   <div className="hidden border-r bg-muted/40 md:block">
     <div className="flex h-full max-h-screen flex-col gap-2">
       <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
@@ -49,6 +75,12 @@ const Sidebar = () => (
             </SidebarNavLink>
           ))}
         </nav>
+      </div>
+      <div className="p-4">
+        <Button variant="outline" className="w-full" onClick={onAddProject}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Project
+        </Button>
       </div>
     </div>
   </div>
